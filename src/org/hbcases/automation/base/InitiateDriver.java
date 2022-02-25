@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
@@ -26,7 +27,7 @@ public class InitiateDriver {
 		}
 		else if (configurationReader.appConfigurationReader("BrowserName").equalsIgnoreCase("Firefox")) {
 			System.setProperty("webdriver.gecko.driver", ".\\driver\\geckodriver.exe");
-			driver = new ChromeDriver();
+			driver = new FirefoxDriver();
 			
 		}
 		else {
