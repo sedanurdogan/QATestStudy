@@ -1,7 +1,6 @@
 package org.hbcases.automation.pages;
 
 import java.io.IOException;
-
 import org.hbcases.automation.base.configurationReader;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,6 +31,9 @@ public class HomepagePOM {
 	
 	@FindBy(xpath="//li[@class='productListContent-item' and @id='i0']//a")
 	WebElement productUrl;
+	
+	@FindBy(xpath="//a[@class='sf-OldMyAccount-2OvEz sf-OldMyAccount-3TYPj']")
+	WebElement shoppingCartButton; 
 	
 	WebDriver driver;
 	WebDriverWait wait;
@@ -69,10 +71,14 @@ public class HomepagePOM {
 	
 	public String selectProduct() {
 		
-		//String productUrl;
-		action.moveToElement(product).build().perform();
 		wait.until(ExpectedConditions.elementToBeClickable(product)).click();
 		return productUrl.getAttribute("href");
+		
+	}
+	
+	public void gotoShoppingCart() {
+		
+		wait.until(ExpectedConditions.elementToBeClickable(shoppingCartButton)).click();
 		
 	}
 	

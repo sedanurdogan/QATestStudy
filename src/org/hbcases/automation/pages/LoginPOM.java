@@ -15,56 +15,67 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 public class LoginPOM {
-	
-	@FindBy(id="myAccount")
-	WebElement myAccount; 
-	
-	@FindBy (xpath="//*[@id=\"txtUserName\"]")
+
+	@FindBy(id = "myAccount")
+	WebElement myAccount;
+
+	@FindBy(xpath = "//*[@id=\"txtUserName\"]")
 	WebElement userName;
-	
-	@FindBy (id="btnLogin")
+
+	@FindBy(id = "btnLogin")
 	WebElement loginButon;
-	
-	@FindBy (xpath="//*[@id=\"txtPassword\"]")
+
+	@FindBy(xpath = "//*[@id=\"txtPassword\"]")
 	WebElement password;
-	
-	@FindBy (xpath="//*[@id=\"btnEmailSelect\"]")
+
+	@FindBy(xpath = "//*[@id=\"btnEmailSelect\"]")
 	WebElement signInButon;
-	
-	
-	
-	
+
+	@FindBy(xpath = "//div[@id='myAccount']//span[@class='sf-OldMyAccount-PhY-T']")
+	WebElement myAccountInfo;
+
 	WebDriver driver;
 	WebDriverWait wait;
 	Actions action;
 	ChromeOptions options = new ChromeOptions();
-	
+
 	public LoginPOM(WebDriver driver, int waitTime) {
-		this.driver = driver; 
+		this.driver = driver;
 		PageFactory.initElements(driver, this);
 		wait = new WebDriverWait(driver, waitTime);
 		action = new Actions(this.driver);
 		options.addArguments("–disable-notifications");
 	}
-	
-	
+
 	public void enterUserInfo() throws IOException {
-		
-		wait.until(ExpectedConditions.elementToBeClickable(userName)).sendKeys(configurationReader.appConfigurationReader("UserEmail"));
+
+		wait.until(ExpectedConditions.elementToBeClickable(userName))
+				.sendKeys(configurationReader.appConfigurationReader("UserEmail"));
 		wait.until(ExpectedConditions.elementToBeClickable(loginButon)).click();
-		wait.until(ExpectedConditions.elementToBeClickable(password)).sendKeys(configurationReader.appConfigurationReader("UserPassword"));
+
+		boolean checkemail = driver
+				.findElements(By.xpath(
+						"//*[@id=\"root\"]/div/div/div[1]/div[2]/div/div/div[2]/div[2]/div/div/form/div/div[1]/div[2]"))
+				.isEmpty();
+		Assert.assertTrue(checkemail, "Wrong User email");
+
+		wait.until(ExpectedConditions.elementToBeClickable(password))
+				.sendKeys(configurationReader.appConfigurationReader("UserPassword"));
 		wait.until(ExpectedConditions.elementToBeClickable(signInButon)).click();
-		
-		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"myAccount\"]/span/a/span[2]")));
-		Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"myAccount\"]/span/a/span[2]")).getText(),
-				"Sedanur Doğan", "Giriş Başarısız");
-		
-		
+
+		try {
+			if (new WebDriverWait(driver, 5)
+					.until(ExpectedConditions.elementToBeClickable(
+							By.xpath("//*[@id=\"root\"]/div/div/div[1]/div[2]/div/div/div[4]/div/div/div[1]/div[2]")))
+					.isDisplayed()) {
+				Assert.fail("Wrong password");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		wait.until(ExpectedConditions.elementToBeClickable(myAccountInfo));
+		Assert.assertEquals(myAccountInfo.getText().trim().toLowerCase(), "hesabım", "Giriş Başarısız");
+
 	}
 
-	
-
-
-
-	
 }

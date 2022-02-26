@@ -1,7 +1,6 @@
 package org.hbcases.automation.pages;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -29,11 +28,18 @@ public class ProductPOM {
 
 	@FindBy(className = "checkoutui-Modal-1k7QD")
 	WebElement modalWindow;
-	
-	@FindBy(xpath="//span[@class='checkoutui-ProductOnBasketHeader-22Wrk']")
+
+	@FindBy(xpath = "//span[@class='checkoutui-ProductOnBasketHeader-22Wrk']")
 	WebElement modalWindowAddText;
-	
-	
+
+	@FindBy(className = "hb-toast-text")
+	WebElement checoutText;
+
+	@FindBy(xpath = "(//table//tr//td[@class='form-area']//button[@class='add-to-basket button small'])[1]")
+	WebElement secondproductAddButton;
+
+	@FindBy(xpath = "(//table//tr/td[@class='shipping-and-campaigns']//a)[1]")
+	WebElement secondProductSellerName;
 
 	WebDriver driver;
 	WebDriverWait wait;
@@ -55,11 +61,7 @@ public class ProductPOM {
 
 	public void addProductToCart() {
 
-		System.out.println(addButton.getText());
 		wait.until(ExpectedConditions.elementToBeClickable(addButton)).click();
-		;
-		Assert.assertNotEquals(wait.until(ExpectedConditions.elementToBeClickable(itemCount)).getText(), 0,
-				"Item is not added");
 
 	}
 
@@ -67,36 +69,52 @@ public class ProductPOM {
 
 		return otherSellersCount.isDisplayed();
 
-//		System.out.println(sellercount.split(" ")[0]);
-//		System.out.println(sellercount.split(" ")[1]);
-//		
-//		System.out.println(sellercount.split(" ")[1].replace("(","").replace(")",""));}
-//		
-//		else {
-//			System.out.println("diger satici yok");
-//		}
 	}
 
-	public void closeCheckOutWindow() {
+	public void closeCheckOutWindow() throws InterruptedException {
 
-		wait.until(ExpectedConditions.elementToBeClickable(modalWindow));
-		if (modalWindow.isDisplayed()) {
-			
-			driver.switchTo().activeElement();
+		boolean status = false;
 
-			
-			//*[@id="AddToCart_96fd0c0d-aff0-475f-9261-bb48fd3fdbb2"]/div/div/div/div/div/div[1]/div/div[1]/div/div[1]/div/span
-			wait.until(ExpectedConditions.visibilityOf(modalWindowAddText));
-			Assert.assertEquals(modalWindowAddText.getText().trim().toLowerCase(), "ürün sepetinizde", "The product does not added");
+		try {
+			new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(checoutText));
 
-			WebElement modalWindowCloseButton = modalWindow.findElement(By.className("checkoutui-Modal-2iZXl"));
-			modalWindowCloseButton.click();
-		} else {
-			
-			System.out.println("hello cinims");
+			status = true;
+
+			Assert.assertEquals(checoutText.getText().trim().toLowerCase(), "ürün sepete eklendi",
+					"The product does not added");
+
+		} catch (Exception e) {
 
 		}
 
+		if (status == false)
+
+		{
+			wait.until(ExpectedConditions.elementToBeClickable(modalWindow));
+
+			if (modalWindow.isDisplayed()) {
+
+				driver.switchTo().activeElement();
+
+				wait.until(ExpectedConditions.visibilityOf(modalWindowAddText));
+				Assert.assertEquals(modalWindowAddText.getText().trim().toLowerCase(), "ürün sepetinizde",
+						"The product does not added");
+
+				WebElement modalWindowCloseButton = modalWindow.findElement(By.className("checkoutui-Modal-2iZXl"));
+				modalWindowCloseButton.click();
+			}
+		}
+
+	}
+
+	public void addSecondProductToChart() {
+
+		wait.until(ExpectedConditions.elementToBeClickable(secondproductAddButton)).click();
+	}
+
+	public String getSecondProductSellerName() {
+
+		return wait.until(ExpectedConditions.elementToBeClickable(secondProductSellerName)).getText();
 	}
 
 }

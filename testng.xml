@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="Suite">
+ 
+  <parameter name="grocery-name"  value="apple"/>
+  <parameter name="url"  value="http://192.168.0.33"/>
+  
   <test thread-count="5" name="Test">
     <classes>
       <class name="org.hbcases.automation.tests.TC_01_AddingProduct"/>
-    </classes>
+      <class name="org.hbcases.automation.tests.RestTestCases"/>
+ 	</classes>
   </test> <!-- Test -->
 </suite> <!-- Suite -->
