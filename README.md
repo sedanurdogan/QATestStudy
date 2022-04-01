@@ -1,6 +1,6 @@
 # QATestStudy
 
-Proje Java 17 sürümü kullanılarak yazıldı. 
+Java 17 kullanılarak yazıldı. 
 
 Apı testleri için bazı veriler parametre olarak testng.xml içerisinde girildi. Bu sebeple templete xml file olarak testng.xml dosyasının adını belirtmek gerekiyor. properties -> TestNg-> Templete XML file olarak eklenebilir.
 
